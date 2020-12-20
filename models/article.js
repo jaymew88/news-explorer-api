@@ -25,16 +25,20 @@ const articlesSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
-    validate(v) {
-      return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/.test(v);
-    }
+    validate: {
+      validator(v) {
+        return validator.isURL(v);
+      },
+    },
   },
   image: {
     type: String,
     required: true,
-    validate(v) {
-      return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/.test(v);
-    }
+    validate: {
+      validator(v) {
+        return validator.isURL(v);
+      },
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
