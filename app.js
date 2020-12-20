@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const auth = require('./middleware/auth');
 const users = require('./routes/users');
@@ -44,8 +46,7 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(auth);
-app.use('/users', users);
+app.use('/users', auth, users);
 
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });

@@ -37,9 +37,11 @@ const login = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
+  console.log(name, email, password);
   bcrypt.hash(password, 10).then(hash => {
-    return User.create({ name, email, password: hash })
+    User.create({ name, email, password: hash })
       .then((user) => {
+        console.log(hash);
         const token =jwt.sign(
           { _id: user._id},
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
