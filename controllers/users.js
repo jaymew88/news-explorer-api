@@ -19,7 +19,7 @@ const userInfo = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-   return User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -37,18 +37,17 @@ const login = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  console.log(name, email, password);
+
   bcrypt.hash(password, 10).then(hash => {
     User.create({ name, email, password: hash })
       .then((user) => {
-        console.log(hash);
         const token =jwt.sign(
           { _id: user._id},
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
           { expiresIn: '7d' }
        );
       res.cookie('token', token, { httpOnly: true });
-      res.send({ data: user, token });
+      res.status(201).send({ data: user, token });
     })
   })
   .catch(next);

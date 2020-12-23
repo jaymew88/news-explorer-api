@@ -1,0 +1,29 @@
+const routes = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+const bodyParser = require('body-parser');
+const auth = require('../middleware/auth');
+const users = require('./users');
+const articles = require('./articles');
+const { login, createUser } = require('../controllers/users');
+
+// checks the email & password passed in the body & returns a JWT
+routes.post('/signin', bodyParser.json(), celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
+// creates a user with the passed email, password, & name in the body
+routes.post('/signup', bodyParser.json(), celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
+
+routes.use('/users', auth, users);
+routes.use('/articles', auth, articles);
+
+module.exports = routes;

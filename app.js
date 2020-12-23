@@ -1,15 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const { celebrate, Joi, errors } = require('celebrate');
-
-const auth = require('./middleware/auth');
-const users = require('./routes/users');
-const articles = require('./routes/articles');
+const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const { login, createUser } = require('./controllers/users');
-
+const routes = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 
@@ -23,6 +17,10 @@ mongoose.connect('mongodb://localhost:27017/news', {
 });
 
 app.use(requestLogger);
+app.use(errorLogger);
+app.use(errors());
+
+app.use('/', routes);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -30,32 +28,10 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
-
-app.use('/users', auth, users);
-app.use('/articles', auth, articles);
-
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });
  });
 
-app.use(errorLogger);
-app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

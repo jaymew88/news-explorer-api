@@ -13,7 +13,6 @@ const savedArticles = (req, res, next) => {
 const createArticle = (req, res, next) => {
   const { keyword, title, text, date, source, link, image  } = req.body;
   const owner = req.user._id;
-  console.log(req.body);
 
   Article.create({ keyword, title, text, date, source, link, image, owner })
     .then((article) => {
