@@ -6,6 +6,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 
 const auth = require('./middleware/auth');
 const users = require('./routes/users');
+const articles = require('./routes/articles');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 
@@ -47,6 +48,7 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use('/users', auth, users);
+app.use('/articles', auth, articles);
 
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });
@@ -65,7 +67,6 @@ app.use((err, req, res, next) => {
         : message,
     });
 });
-
 
 app.listen(PORT, () => {
   console.log(`App is listening on PORT ${PORT}`);
