@@ -1,4 +1,7 @@
 const Article = require('../models/article');
+const BadRequestErr = require('../config/errors/badrequest-err');
+const NotFoundErr = require('../config/errors/notfound-err');
+const errorMessages = require('../config/errors/errorMessages');
 
 
 //returns all articles saved by the user
@@ -17,7 +20,7 @@ const createArticle = (req, res, next) => {
   Article.create({ keyword, title, text, date, source, link, image, owner })
     .then((article) => {
       if (!article) {
-        throw new BadRequestErr('Card validation failed');
+        throw new BadRequestErr(errorMessages.couldNotCreateArticle);
       }
       res.status(201).send({ data: article});
     })
@@ -31,12 +34,12 @@ const deleteArticle = (req, res, next) => {
       if (article) {
         res.send({ data: article });
       } else {
-        throw new NotFoundErr('Card does not belong to user');
+        throw new NotFoundErr(errorMessages.notUsersArticle);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr('Invalid card id');
+        throw new BadRequestErr(errorMessages.invalidArticle);
       }
     }).catch(next);
 }

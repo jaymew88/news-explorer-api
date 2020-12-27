@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const routes = require('./routes/index');
@@ -16,6 +17,7 @@ mongoose.connect('mongodb://localhost:27017/news', {
   useUnifiedTopology: true,
 });
 
+app.use(helmet());
 app.use(requestLogger);
 app.use(errorLogger);
 app.use(errors());
@@ -31,7 +33,6 @@ app.get('/crash-test', () => {
 app.get('*',(req,res)=>{
   return res.status(404).send({ "message": "Requested resource not found" });
  });
-
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

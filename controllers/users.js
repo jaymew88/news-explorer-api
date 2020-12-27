@@ -1,7 +1,8 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const UnauthorizationErr = require('../errors/unauth-err');
+const UnauthorizationErr = require('../config/errors/unauth-err');
+const errorMessages = require('../config/errors/errorMessages');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -11,7 +12,7 @@ const userInfo = (req, res, next) => {
       if (user) {
         res.send({ data: user })
       } else {
-        throw new NotFoundErr('user ID not found');
+        throw new NotFoundErr(errorMessages.invalidUser);
       }
     }).catch(next);
 }
@@ -29,8 +30,8 @@ const login = (req, res, next) => {
         res.cookie('token', token, { httpOnly: true });
         res.send({ data: user, token });
     })
-    .catch((err) => {
-      throw new UnauthorizationErr(err.message);
+    .catch(() => {
+      throw new UnauthorizationErr(errorMessages.invalidUser);
     })
     .catch(next);
 }
