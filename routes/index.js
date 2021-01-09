@@ -9,7 +9,7 @@ const { login, createUser } = require('../controllers/users');
 // checks the email & password passed in the body & returns a JWT
 routes.post('/signin', bodyParser.json(), celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
+    email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
     password: Joi.string().required(),
   }),
 }), login);
@@ -18,8 +18,8 @@ routes.post('/signin', bodyParser.json(), celebrate({
 routes.post('/signup', bodyParser.json(), celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+    email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
+    password: Joi.string().trim().min(1).required(),
   }),
 }), createUser);
 

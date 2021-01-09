@@ -1,52 +1,45 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 const articlesSchema = new mongoose.Schema({
   keyword: {
     type: String,
-    required: true
+    required: true,
   },
   title: {
     type: String,
-    required: true
+    required: true,
   },
   text: {
     type: String,
-    required: true
+    required: true,
   },
   date: {
     type: String,
-    required: true
+    required: true,
   },
   source: {
     type: String,
-    required: true
+    required: true,
   },
   link: {
     type: String,
     required: true,
     validate: {
-      validator(v) {
-        return validator.isURL(v);
-      },
-      message: "Not a valid URL",
+      validator: (v) => /(https?:\/\/(www)?)+.+/g.test(v),
     },
   },
   image: {
     type: String,
     required: true,
     validate: {
-      validator(v) {
-        return validator.isURL(v);
-      },
-      message: "Not a valid URL",
+      validator: (v) => /(https?:\/\/(www)?)+.+/g.test(v),
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('article', articlesSchema);

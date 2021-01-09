@@ -5,10 +5,8 @@ const errorMessages = {
   invalidArticle: 'Invalid article',
   invalidUser: 'User ID not found',
   incorrectLogin: 'Incorrect password or email',
-
-
-}
+  notFound: 'Requested Resource not found',
+  conflictUser: 'User already exists',
+};
 
 module.exports = errorMessages;
-
-// import error messages & error throw new error(errorMessage.notFoundError);

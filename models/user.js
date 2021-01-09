@@ -17,29 +17,29 @@ const usersSchema = new mongoose.Schema({
       validator(v) {
         return validator.isEmail(v);
       },
-      message: "Email format not valid",
+      message: 'Email format not valid',
     },
   },
   password: {
     type: String,
     required: true,
     select: false,
-  }
+  },
 });
 
 usersSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password').then((user) => {
-      if (!user) {
-        return Promise.reject(new Error(errorMessages.incorrectLogin));
-      }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Error(errorMessages.incorrectLogin));
-          }
-          return user;
-        });
-    });
+    if (!user) {
+      return Promise.reject(new Error(errorMessages.incorrectLogin));
+    }
+    return bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error(errorMessages.incorrectLogin));
+        }
+        return user;
+      });
+  });
 };
 
 module.exports = mongoose.model('user', usersSchema);

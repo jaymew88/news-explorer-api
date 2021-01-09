@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const routes = require('./routes/index');
+const { errorMessages } = require('./config/errors/errorMessages');
+const NotFoundErr = require('./config/errors/notfound-err');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,21 +21,17 @@ mongoose.connect('mongodb://localhost:27017/news', {
 });
 
 app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 app.use(errorLogger);
 app.use(errors());
 
 app.use('/', routes);
 
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Server will crash now');
-  }, 0);
+app.get('*', () => {
+  throw new NotFoundErr(errorMessages.notFound);
 });
-
-app.get('*',(req,res)=>{
-  return res.status(404).send({ "message": "Requested resource not found" });
- });
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
@@ -43,6 +42,7 @@ app.use((err, req, res, next) => {
         ? 'An error occurred on the server'
         : message,
     });
+  next();
 });
 
 app.listen(PORT, () => {

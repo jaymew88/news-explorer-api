@@ -23,5 +23,5 @@ This is the backend for my final project as a Practicum student in the Web Devel
 * Mongo
 
 ## Deployment
-jayme-news.
-api.jayme-news.
+API: api.jw-news.students.nomoreparties.site
+
