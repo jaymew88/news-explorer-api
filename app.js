@@ -6,7 +6,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const routes = require('./routes/index');
-const { errorMessages } = require('./config/errors/errorMessages');
+const { ERROR_MESSGAES } = require('./config/utils/constants');
 const NotFoundErr = require('./config/errors/notfound-err');
 
 const { PORT = 3000 } = process.env;
@@ -24,14 +24,15 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
-app.use(errorLogger);
-app.use(errors());
 
 app.use('/', routes);
 
-app.get('*', () => {
-  throw new NotFoundErr(errorMessages.notFound);
+app.use('*', () => {
+  throw new NotFoundErr(ERROR_MESSGAES.notFound);
 });
+
+app.use(errorLogger);
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

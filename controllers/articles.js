@@ -2,7 +2,7 @@ const Article = require('../models/article');
 const BadRequestErr = require('../config/errors/badrequest-err');
 const NotFoundErr = require('../config/errors/notfound-err');
 const ForbiddenErr = require('../config/errors/forbbiden-err');
-const { errorMessages } = require('../config/errors/errorMessages');
+const { ERROR_MESSGAES } = require('../config/utils/constants');
 
 // Returns all articles saved by the user
 const savedArticles = (req, res, next) => {
@@ -25,7 +25,7 @@ const createArticle = (req, res, next) => {
       res.status(201).send({ data: article })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          throw new BadRequestErr(errorMessages.couldNotCreateArticle);
+          throw new BadRequestErr(ERROR_MESSGAES.couldNotCreateArticle);
         }
     })
       next(err);
@@ -43,14 +43,14 @@ const deleteArticle = (req, res, next) => {
             res.send({ data: articleDeleted });
           });
       } else if (!article) {
-        throw new NotFoundErr(errorMessages.invalidArticle);
+        throw new NotFoundErr(ERROR_MESSGAES.invalidArticle);
       } else {
-        throw new ForbiddenErr(errorMessages.notUsersArticle);
+        throw new ForbiddenErr(ERROR_MESSGAES.notUsersArticle);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestErr(errorMessages.invalidArticle);
+        throw new BadRequestErr(ERROR_MESSGAES.invalidArticle);
       }
       next(err);
     }).catch(next);

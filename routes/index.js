@@ -1,13 +1,12 @@
 const routes = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const bodyParser = require('body-parser');
 const auth = require('../middleware/auth');
 const users = require('./users');
 const articles = require('./articles');
 const { login, createUser } = require('../controllers/users');
 
 // checks the email & password passed in the body & returns a JWT
-routes.post('/signin', bodyParser.json(), celebrate({
+routes.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
     password: Joi.string().required(),
@@ -15,7 +14,7 @@ routes.post('/signin', bodyParser.json(), celebrate({
 }), login);
 
 // creates a user with the passed email, password, & name in the body
-routes.post('/signup', bodyParser.json(), celebrate({
+routes.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().required().pattern(new RegExp('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')),
