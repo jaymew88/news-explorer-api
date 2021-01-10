@@ -6,14 +6,14 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const routes = require('./routes/index');
-const { ERROR_MESSGAES } = require('./config/utils/constants');
+const { ERROR_MESSGAES, DB_ADDRESS } = require('./config/utils/constants');
 const NotFoundErr = require('./config/errors/notfound-err');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/news', {
+mongoose.connect(DB_ADDRESS, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
