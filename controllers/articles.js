@@ -23,12 +23,12 @@ const createArticle = (req, res, next) => {
   })
     .then((article) => {
       res.status(201).send({ data: article })
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          throw new BadRequestErr(ERROR_MESSGAES.couldNotCreateArticle);
-        }
-    })
-      next(err);
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            throw new BadRequestErr(ERROR_MESSGAES.couldNotCreateArticle);
+          }
+          next(err);
+        });
     })
     .catch(next);
 };
