@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
@@ -10,6 +11,11 @@ const { ERROR_MESSGAES, DB_ADDRESS } = require('./config/utils/constants');
 const NotFoundErr = require('./config/errors/notfound-err');
 
 const { PORT = 3000 } = process.env;
+
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+};
 
 const app = express();
 
@@ -21,6 +27,8 @@ mongoose.connect(DB_ADDRESS, {
 });
 
 app.use(helmet());
+app.use(express.static('build'));
+app.use(express.json(), cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
